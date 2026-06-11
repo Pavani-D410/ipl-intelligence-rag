@@ -1,4 +1,5 @@
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 loader = PyPDFLoader(
     "data/IPL_LangGraph_RAG_Dataset.pdf"
@@ -6,4 +7,11 @@ loader = PyPDFLoader(
 
 docs = loader.load()
 
-print(len(docs))
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+
+chunks = splitter.split_documents(docs)
+
+print("Total Chunks:", len(chunks))
