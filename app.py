@@ -1,35 +1,23 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
-# Load PDF
-loader = PyPDFLoader(
-    "data/IPL_LangGraph_RAG_Dataset.pdf"
-)
-
-docs = loader.load()
-
-# Split into chunks
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=200
-)
-
-chunks = splitter.split_documents(docs)
-
-# Create embeddings
+# Load embeddings
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-# Create FAISS DB
-db = FAISS.from_documents(
-    chunks,
-    embeddings
+# Load FAISS DB
+db = FAISS.load_local(
+    "faiss_db",
+    embeddings,
+    allow_dangerous_deserialization=True
 )
 
-# Save DB
-db.save_local("faiss_db")
+# Retriever
+retriever = db.as_retriever()
 
-print("FAISS Vector Database Created Successfully")
+query = "What is Virat Kohli IPL run tally?"
+
+docs = retriever.invoke(query)
+
+print(docs[0].page_content)
