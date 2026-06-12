@@ -6,6 +6,10 @@ def records_node(state):
         state["user_query"]
     )
 
-    return {
-        "context": docs[0].page_content
-    }
+    context = "\n\n".join(
+    [doc.page_content for doc in docs[:3]]
+)
+
+    return {  
+    "context": context
+}

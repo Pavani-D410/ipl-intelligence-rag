@@ -1,23 +1,17 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
+from graph import app
 
-# Load embeddings
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+while True:
 
-# Load FAISS DB
-db = FAISS.load_local(
-    "faiss_db",
-    embeddings,
-    allow_dangerous_deserialization=True
-)
+    query = input("\nAsk IPL Question: ")
 
-# Retriever
-retriever = db.as_retriever()
+    if query.lower() == "exit":
+        break
 
-query = "What is Virat Kohli IPL run tally?"
+    result = app.invoke(
+        {
+            "user_query": query
+        }
+    )
 
-docs = retriever.invoke(query)
-
-print(docs[0].page_content)
+    print("\nAnswer:")
+    print(result["final_answer"])

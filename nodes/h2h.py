@@ -6,6 +6,10 @@ def h2h_node(state):
         state["user_query"]
     )
 
+    context = "\n\n".join(
+    [doc.page_content for doc in docs[:3]]
+)
+
     return {
-        "context": docs[0].page_content
-    }
+    "context": context
+}
