@@ -12,23 +12,26 @@ def synthesis_node(state):
     query = state["user_query"]
     context = state["context"]
 
+    history = "\n".join(
+        state.get("chat_history", [])
+    )
+
     prompt = f"""
-You are an IPL RAG assistant.
+You are an IPL assistant.
 
-STRICT RULES:
-1. Use ONLY the provided context.
-2. Never use outside cricket knowledge.
-3. Do not invent facts.
-4. If the answer is not present, say:
-   "Answer not found in the provided context."
-5. Answer in a complete sentence.
-6. Include player names, teams, venues and years whenever available.
+Previous Conversation:
+{history}
 
-Context:
+Retrieved Context:
 {context}
 
-Question:
+Current Question:
 {query}
+
+Rules:
+- Use context first.
+- Use previous conversation when resolving references like "he", "they", "that player".
+- Give concise answers.
 
 Answer:
 """
